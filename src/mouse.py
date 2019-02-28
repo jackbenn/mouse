@@ -6,16 +6,24 @@ class MouseParser:
     ops = {'+': operator.add,
            '-': operator.sub,
            '*': operator.mul,
-           '/': operator.floordiv}
+           '/': operator.floordiv,
+           '=': operator.eq,
+           '<': operator.lt,
+           '>': operator.gt}
     def __init__(self):
         self.stack = []
+        self.loop_stack = []
         self.variables = [None] * 26
     
     def push(self, x):
         self.stack.append(x)
-    
+
     def pop(self):
         return self.stack.pop()
+
+    def find_next(self, text, i, char):
+        """Return next instance of char in the text starting at i"""
+        return text
 
     def parse(self, text):
         
@@ -32,18 +40,35 @@ class MouseParser:
             elif char in self.ops:
                 a = self.pop()
                 b = self.pop()
-                self.push(self.ops[char](b, a))
+                self.push(int(self.ops[char](b, a)))
             elif 'a' <= char <= 'z':
                 self.push(ord(char) - ord('a'))
             elif char == '.':
                 self.push(self.variables[self.pop()])
-            elif char == '=':
+            elif char == ':':
                 a = self.pop()
                 b = self.pop()
-                self.variables[b] = a
+                self.variables[a] = b
+            elif char == '(':
+                self.loop_stack.append(i)
+            elif char == ')':
+                i = self.loop_stack.pop() - 1
+            elif char == '^':
+                if self.pop() == 0:
+                    i = text.index(')', i)
+            elif char == '[':
+                if self.pop() == 0:
+                    i = text.index(']', i)
+            elif char == ']':
+                pass
+            elif char == ' ':
+                pass
+            else:
+                raise IndexError(f"Invalid character {char}")
             i += 1
 
 if __name__ == '__main__':
     parser = MouseParser()
     parser.parse(sys.argv[1])
     print(parser.stack)
+    print(parser.variables)
