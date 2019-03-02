@@ -1,6 +1,13 @@
 import sys
 import operator
 
+
+class StackFrame:
+    def __init__(self, variables=None):
+        if variables is None:
+            self.variables = [None] * 26
+        self.
+
 class MouseParser:
 
     ops = {'+': operator.add,
@@ -61,8 +68,10 @@ class MouseParser:
                     i = text.index(']', i)
             elif char == ']':
                 pass
-            elif char == ' ':
+            elif char in [' ', '\n']:
                 pass
+            elif char == '$':
+                return
             else:
                 raise IndexError(f"Invalid character {char}")
             i += 1
