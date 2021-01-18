@@ -1,12 +1,12 @@
 import sys
 import operator
-
+import time
 
 class StackFrame:
     def __init__(self, variables=None):
         if variables is None:
             self.variables = [None] * 26
-        self.
+        
 
 class MouseParser:
 
@@ -48,6 +48,8 @@ class MouseParser:
                 a = self.pop()
                 b = self.pop()
                 self.push(int(self.ops[char](b, a)))
+            elif char == '!':
+                print(self.pop())
             elif 'a' <= char <= 'z':
                 self.push(ord(char) - ord('a'))
             elif char == '.':
@@ -71,13 +73,20 @@ class MouseParser:
             elif char in [' ', '\n']:
                 pass
             elif char == '$':
-                return
+                return True
             else:
                 raise IndexError(f"Invalid character {char}")
             i += 1
+            time.sleep(0.01)
+        return False
+
 
 if __name__ == '__main__':
     parser = MouseParser()
-    parser.parse(sys.argv[1])
-    print(parser.stack)
-    print(parser.variables)
+    while True:
+        line = input()
+        done = parser.parse(line)
+        print(parser.stack)
+        print(parser.variables)
+        if done:
+            break
