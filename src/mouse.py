@@ -3,17 +3,16 @@ import operator
 import time
 
 class StackFrame:
-    def __init__(self, variables=None):
-        if variables is None:
-            self.variables = [None] * 26
-        
+    def __init__(self):
+        self.variables = [None] * 26
+        self.location
 
 class MouseParser:
-
     ops = {'+': operator.add,
            '-': operator.sub,
            '*': operator.mul,
            '/': operator.floordiv,
+           '\\': operator.mod,
            '=': operator.eq,
            '<': operator.lt,
            '>': operator.gt}
@@ -50,6 +49,15 @@ class MouseParser:
                 self.push(int(self.ops[char](b, a)))
             elif char == '!':
                 print(self.pop())
+            elif char == '"':
+                while True:
+                    i += 1
+                    if text[i] == '"':
+                        break
+                    if text[i] == '!':
+                        print()
+                    else:
+                        print(text[i], end='')
             elif 'a' <= char <= 'z':
                 self.push(ord(char) - ord('a'))
             elif char == '.':
@@ -83,10 +91,8 @@ class MouseParser:
 
 if __name__ == '__main__':
     parser = MouseParser()
-    while True:
-        line = input()
-        done = parser.parse(line)
-        print(parser.stack)
-        print(parser.variables)
-        if done:
-            break
+    text = sys.stdin.read()
+    parser.parse(text)
+
+    print(parser.stack)
+    print(parser.variables)
