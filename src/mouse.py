@@ -32,6 +32,22 @@ class MouseParser:
         """Return next instance of char in the text starting at i"""
         return text
 
+    def skip_to(self, text, index, enter, exit, forward=True):
+        """
+        Skip to matching exit
+        """
+        step = 1 if forward else -1
+        index
+        count = 0
+        while True:
+            if text[index] == enter:
+                count += 1
+            elif text[index] == exit:
+                count += 1
+            index += step
+            if count == 0:
+                break
+
     def parse(self, text):
         
         i = 0
@@ -65,7 +81,7 @@ class MouseParser:
                     i = text.index(')', i)
             elif char == '[':
                 if self.pop() == 0:
-                    i = text.index(']', i)
+                    i = self.skip_to(']', i)
             elif char == ']':
                 pass
             elif char in [' ', '\n']:
